@@ -26,6 +26,13 @@ from mpmath import mp, mpf
 mp.pretty = True
 
 
+
+# Creating static variable to be used throughout the game.
+
+
+LETTERS: str = "abcdefghijklmnopqrstuvwxyz"
+
+
 # Creating static functions to be used throughout the game.
 
 
@@ -49,6 +56,15 @@ def mpf_product_of_list(a_list: list) -> mpf:
     return mpf(reduce(lambda x, y: mpf(x) * mpf(y) if is_number(x) and
                                                       is_number(y) else mpf(x) if is_number(x) and not is_number(
         y) else mpf(y) if is_number(y) and not is_number(x) else 1, a_list, 1))
+
+
+def generate_random_name() -> str:
+    res: str = ""  # initial value
+    name_length: int = random.randint(3, 25)
+    for i in range(name_length):
+        res += LETTERS[random.randint(0, len(LETTERS) - 1)]
+
+    return res.capitalize()
 
 
 def load_game_data(file_name):
@@ -541,8 +557,8 @@ def main() -> int:
                 ])
                 convo.send_message("Please enter a good name of an upgrade (safe one word response only please)!")
                 upgrade_name: str = str(convo.last.text)
-                convo.send_message("Please enter a good description of " + str(upgrade_name) + " (safe description only please)!")
-                upgrade_description: str = str(convo.last.text)
+                print(upgrade_name)
+                upgrade_description: str = "An upgrade"
                 upgrade: Upgrade = Upgrade(upgrade_name, upgrade_description, mpf("10") ** random.randint(10, 5120),
                                            mpf(random.randint(1, 2560)), mpf(random.randint(1, 2560)))
                 upgrades.append(upgrade)
@@ -565,9 +581,10 @@ def main() -> int:
                         ])
                         convo.send_message("Please enter a name of a jungle, mountain, pirate cove, lake, forest, "
                                            "desert, harbor, sea, castle, island, or beach (safe response only please)!")
-                        place_name: str = str(convo.last.text)
-                        convo.send_message("Please enter a good description of " + str(place_name) + " (safe description only please)!")
-                        place_description: str = str(convo.last.text)
+                        place_name: str = str(generate_random_name())
+                        place_description: str = "A " + str(random.choice(["jungle", "mountain", "pirate cove",
+                                                                          "lake", "forest", "desert", "harbor", "sea",
+                                                                          "castle", "island", "beach"]))
                         place_gold_cost: mpf = mpf("10") ** random.randint(5, 2000)
                         place: Place = Place(place_name, place_description, place_gold_cost, place_gold_cost / mpf("1e3"), place_gold_cost / mpf("1e5"))
                         board_tiles.append(place)
